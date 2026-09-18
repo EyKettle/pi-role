@@ -8,3 +8,9 @@ export function registerRoleFlag(pi: Pick<ExtensionAPI, "registerFlag">): void {
 		description: "Identity document id, or none",
 	});
 }
+
+export function roleFlagValue(
+	value: boolean | string | undefined,
+): string | undefined {
+	return typeof value === "string" ? value : undefined;
+}

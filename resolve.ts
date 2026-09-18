@@ -36,7 +36,7 @@ function selectHop(
 		return { kind: "none" };
 	}
 	const document = documents.get(hop);
-	if (document === undefined) {
+	if (document === undefined || document.body.trim().length === 0) {
 		return undefined;
 	}
 	return { kind: "document", ...document };

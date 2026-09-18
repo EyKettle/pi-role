@@ -93,4 +93,21 @@ describe("resolveIdentity", () => {
 			expect(result.id).toBe("Reviewer");
 		}
 	});
+
+	it("treats an empty document body as an invalid hop", () => {
+		const documents = new Map([
+			[
+				"Empty",
+				{ id: "Empty", body: "   \n", path: "/roles/Empty.md" },
+			],
+		]);
+		const result = resolveIdentity({
+			flag: "Empty",
+			env: undefined,
+			defaultId: "",
+			fallbackId: "none",
+			documents,
+		});
+		expect(result).toEqual({ kind: "none" });
+	});
 });
