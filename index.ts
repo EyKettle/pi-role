@@ -17,9 +17,15 @@ import {
 import {
 	completeRoleChoices,
 	roleChoiceIds,
+	restoreSessionRole,
 	switchSessionRole,
 } from "./command";
 import { chainedSystemPrompt } from "./prepend";
+import {
+	IDENTITY_ENTRY_TYPE,
+	resolveSessionStart,
+	storedIdentityId,
+} from "./persist";
 import type { RoleDocument } from "./discover";
 
 export default function (pi: ExtensionAPI): void {
@@ -69,24 +75,42 @@ export default function (pi: ExtensionAPI): void {
 	}));
 	pi.on("session_start", (_event, ctx) => {
 		rememberSessionContext(ctx.cwd, ctx.isProjectTrusted());
-		const { outcome, settingsError } = bindSessionIdentity({
-			flag: roleFlagValue(pi.getFlag(ROLE_FLAG)),
-			env: process.env[ROLE_ENV],
-			agentDir: getAgentDir(),
+		const documents = documentsFor({
 			cwd: ctx.cwd,
-			configDirName: CONFIG_DIR_NAME,
 			projectTrusted: ctx.isProjectTrusted(),
 		});
-		setBoundIdentity(outcome);
+		const plan = resolveSessionStart({
+			flag: roleFlagValue(pi.getFlag(ROLE_FLAG)),
+			entries: ctx.sessionManager.getEntries(),
+			restore: (id) => restoreSessionRole(id, documents),
+			bind: () =>
+				bindSessionIdentity({
+					flag: roleFlagValue(pi.getFlag(ROLE_FLAG)),
+					env: process.env[ROLE_ENV],
+					agentDir: getAgentDir(),
+					cwd: ctx.cwd,
+					configDirName: CONFIG_DIR_NAME,
+					projectTrusted: ctx.isProjectTrusted(),
+				}),
+		});
+		setBoundIdentity(plan.outcome);
 		if (!ctx.hasUI) {
 			return;
 		}
-		if (settingsError !== undefined) {
-			ctx.ui.notify(settingsError, "warning");
+		if (plan.restoreError !== undefined) {
+			ctx.ui.notify(plan.restoreError, "warning");
 		}
-		if (outcome.kind === "none" && outcome.notify !== undefined) {
-			ctx.ui.notify(outcome.notify, "warning");
+		if (plan.settingsError !== undefined) {
+			ctx.ui.notify(plan.settingsError, "warning");
 		}
+		if (plan.outcome.kind === "none" && plan.outcome.notify !== undefined) {
+			ctx.ui.notify(plan.outcome.notify, "warning");
+		}
+	});
+	pi.on("turn_start", () => {
+		pi.appendEntry(IDENTITY_ENTRY_TYPE, {
+			id: storedIdentityId(getBoundIdentity()),
+		});
 	});
 	pi.on("before_agent_start", (event) => {
 		const systemPrompt = chainedSystemPrompt(

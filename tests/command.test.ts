@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
 	completeRoleChoices,
 	roleChoiceIds,
+	restoreSessionRole,
 	switchSessionRole,
 } from "../command";
 import type { RoleDocument } from "../discover";
@@ -60,6 +61,31 @@ describe("switchSessionRole", () => {
 	it("keeps the previous identity on an unknown id", () => {
 		expect(switchSessionRole("Missing", docs("Reviewer"), previous)).toEqual({
 			outcome: previous,
+			error: 'Unknown identity "Missing".',
+		});
+	});
+});
+
+describe("restoreSessionRole", () => {
+	it("restores a discovered id", () => {
+		expect(restoreSessionRole("Reviewer", docs("Reviewer"))).toEqual({
+			outcome: {
+				kind: "document",
+				id: "Reviewer",
+				body: "Reviewer body",
+				path: "/roles/Reviewer.md",
+			},
+		});
+	});
+
+	it("restores none", () => {
+		expect(restoreSessionRole("none", docs("Reviewer"))).toEqual({
+			outcome: { kind: "none" },
+		});
+	});
+
+	it("errors on an unknown id without a previous outcome", () => {
+		expect(restoreSessionRole("Missing", docs("Reviewer"))).toEqual({
 			error: 'Unknown identity "Missing".',
 		});
 	});

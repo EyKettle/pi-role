@@ -20,16 +20,38 @@ export function switchSessionRole(
 	documents: Map<string, RoleDocument>,
 	previous: IdentityOutcome,
 ): { outcome: IdentityOutcome; error?: string } {
+	const outcome = lookupRoleId(id, documents);
+	if (outcome === undefined) {
+		return {
+			outcome: previous,
+			error: `Unknown identity "${id.trim()}".`,
+		};
+	}
+	return { outcome };
+}
+
+export function restoreSessionRole(
+	id: string,
+	documents: Map<string, RoleDocument>,
+): { outcome: IdentityOutcome } | { error: string } {
+	const outcome = lookupRoleId(id, documents);
+	if (outcome === undefined) {
+		return { error: `Unknown identity "${id.trim()}".` };
+	}
+	return { outcome };
+}
+
+function lookupRoleId(
+	id: string,
+	documents: Map<string, RoleDocument>,
+): IdentityOutcome | undefined {
 	const trimmed = id.trim();
 	if (trimmed === NONE_ID) {
-		return { outcome: { kind: "none" } };
+		return { kind: "none" };
 	}
 	const document = documents.get(trimmed);
 	if (document === undefined || document.body.trim().length === 0) {
-		return {
-			outcome: previous,
-			error: `Unknown identity "${trimmed}".`,
-		};
+		return undefined;
 	}
-	return { outcome: { kind: "document", ...document } };
+	return { kind: "document", ...document };
 }
