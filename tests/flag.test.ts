@@ -31,6 +31,7 @@ describe("extension factory", () => {
 			registerFlag(name: string) {
 				names.push(name);
 			},
+			registerCommand() {},
 			getFlag() {
 				return undefined;
 			},

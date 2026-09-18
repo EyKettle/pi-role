@@ -11,6 +11,7 @@ describe("before_agent_start wiring", () => {
 				handlers.set(event, handler);
 			},
 			registerFlag() {},
+			registerCommand() {},
 			getFlag() {
 				return undefined;
 			},

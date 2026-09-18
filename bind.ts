@@ -1,4 +1,8 @@
-import { discoverRoleDocuments, roleDirectories } from "./discover";
+import {
+	discoverRoleDocuments,
+	roleDirectories,
+	type RoleDocument,
+} from "./discover";
 import { loadRoleSettings } from "./settings";
 import { resolveIdentity, type IdentityOutcome } from "./resolve";
 
@@ -43,4 +47,38 @@ export function getBoundIdentity(): IdentityOutcome {
 
 export function setBoundIdentity(outcome: IdentityOutcome): void {
 	bound = outcome;
+}
+
+let sessionCwd = "";
+let sessionTrusted = false;
+
+export function rememberSessionContext(
+	cwd: string,
+	projectTrusted: boolean,
+): void {
+	sessionCwd = cwd;
+	sessionTrusted = projectTrusted;
+}
+
+export function lastSessionContext(): {
+	cwd: string;
+	projectTrusted: boolean;
+} {
+	return { cwd: sessionCwd, projectTrusted: sessionTrusted };
+}
+
+export function discoverBoundDocuments(input: {
+	agentDir: string;
+	cwd: string;
+	configDirName: string;
+	projectTrusted: boolean;
+}): Map<string, RoleDocument> {
+	return discoverRoleDocuments(
+		roleDirectories({
+			agentDir: input.agentDir,
+			cwd: input.cwd,
+			configDirName: input.configDirName,
+			projectTrusted: input.projectTrusted,
+		}),
+	);
 }
