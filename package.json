@@ -4,5 +4,23 @@
   "type": "module",
   "private": true,
   "description": "Pi extension: session identity claim from role documents",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "^0.85.1"
+  },
+  "peerDependenciesMeta": {
+    "@earendil-works/pi-coding-agent": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@earendil-works/pi-coding-agent": "^0.85.1",
+    "@types/node": "^24.0.0",
+    "typescript": "6.0.3",
+    "vitest": "^4.1.11"
+  }
 }
