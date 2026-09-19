@@ -17,7 +17,7 @@ Developed against Pi 0.85.1; expected to support 0.8x.x.
 
 Does not write `settings.json`. Does not write identity files. Identity is stored with the session.
 
-**One limitation**: A switch is recorded after the next agent turn.
+**One limitation**: Recorded at the next turn start (no assistant reply required). If no message is sent, `/resume` does not see that switch.
 
 | Call                       | Behavior                                      |
 | -------------------------- | --------------------------------------------- |
@@ -25,3 +25,18 @@ Does not write `settings.json`. Does not write identity files. Identity is store
 | `/role {id}`               | Argument as ID; completions from the same set |
 | `/role` + invalid argument | Notify; keep the current binding              |
 | `/role none`               | Legal; later turns do not prepend identity    |
+
+## Compatibility
+
+### `npm:pi-subagents` notes
+
+pi-subagents usually ships its own identity; this extension's effect overlaps and conflicts with it.
+
+This extension does not handle subagents. Whether a child session loads ambient extensions (including this one) is decided by pi-subagents.
+
+| Child session      | Default      |
+| ------------------ | ------------ |
+| Background (async) | Load ambient |
+| Foreground         | Do not load  |
+
+Agent `extensions`: omit to load ambient; empty to load none; a list to load exactly those. Details: pi-subagents `docs/agents.md`.
