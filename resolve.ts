@@ -32,10 +32,17 @@ function selectHop(
 	if (hop === undefined || hop.length === 0) {
 		return undefined;
 	}
-	if (hop === NONE_ID) {
+	return resolveDocumentId(hop, documents);
+}
+
+export function resolveDocumentId(
+	id: string,
+	documents: Map<string, RoleDocument>,
+): IdentityOutcome | undefined {
+	if (id === NONE_ID) {
 		return { kind: "none" };
 	}
-	const document = documents.get(hop);
+	const document = documents.get(id);
 	if (document === undefined || document.body.trim().length === 0) {
 		return undefined;
 	}
