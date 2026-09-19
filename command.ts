@@ -1,6 +1,6 @@
 import { NONE_ID } from "./constants";
 import type { RoleDocument } from "./discover";
-import type { IdentityOutcome } from "./resolve";
+import { resolveDocumentId, type IdentityOutcome } from "./resolve";
 
 export function roleChoiceIds(documents: Map<string, RoleDocument>): string[] {
 	return [...documents.keys()].sort().concat(NONE_ID);
@@ -45,13 +45,5 @@ function lookupRoleId(
 	id: string,
 	documents: Map<string, RoleDocument>,
 ): IdentityOutcome | undefined {
-	const trimmed = id.trim();
-	if (trimmed === NONE_ID) {
-		return { kind: "none" };
-	}
-	const document = documents.get(trimmed);
-	if (document === undefined || document.body.trim().length === 0) {
-		return undefined;
-	}
-	return { kind: "document", ...document };
+	return resolveDocumentId(id.trim(), documents);
 }
