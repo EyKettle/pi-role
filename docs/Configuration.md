@@ -6,13 +6,13 @@ English | [中文](../docs_zh-CN/Configuration.md)
 
 ## Startup chain
 
-| Order     | Entry           | Owner               | Lifetime             |
-| --------- | --------------- | ------------------- | -------------------- |
-| 1         | `--role`        | This process's CLI  | That `session_start` |
-| 2         | `PI_ROLE`       | Process environment | That `session_start` |
-| 3         | `role.default`  | `settings.json`     | File                 |
-| 4         | `role.fallback` | `settings.json`     | File                 |
-| Chain end | `none`          | Built-in            | That binding         |
+| Order     | Entry           | Owner               | Lifetime     |
+| --------- | --------------- | ------------------- | ------------ |
+| 1         | `--role`        | This process's CLI  | That start   |
+| 2         | `PI_ROLE`       | Process environment | That start   |
+| 3         | `role.default`  | `settings.json`     | File         |
+| 4         | `role.fallback` | `settings.json`     | File         |
+| Chain end | `none`          | Built-in            | That binding |
 
 ## `settings.json`
 
@@ -36,6 +36,14 @@ Example:
   }
 }
 ```
+
+## Session record
+
+| Condition                                | Behavior                 |
+| ---------------------------------------- | ------------------------ |
+| No `--role` and the session has a record | Restore the recorded ID  |
+| `--role` is non-empty                    | Follow the startup chain |
+| No record (`/new` included)              | Follow the startup chain |
 
 ## Identity files
 
