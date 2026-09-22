@@ -5,6 +5,7 @@
   "private": true,
   "description": "Pi extension: session identity claim from role documents",
   "license": "MIT",
+  "packageManager": "pnpm@11.25.0",
   "scripts": {
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit"
