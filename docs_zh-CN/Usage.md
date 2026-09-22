@@ -26,6 +26,12 @@
 | `/role` + 非法参数 | 通知，保持当前绑定             |
 | `/role none`       | 合法；后续回合不前置身份       |
 
+## 状态
+
+状态会以脚注形式显示在底部状态栏中，仅显示身份 ID。
+
+![底部状态栏展示着身份 ID (图示已安装 pi-zentui 插件)](../imgs/identity-status.png)
+
 ## 兼容性
 
 ### `npm:pi-subagents` 特别说明

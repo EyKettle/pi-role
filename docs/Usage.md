@@ -26,6 +26,12 @@ Does not write `settings.json`. Does not write identity files. Identity is store
 | `/role` + invalid argument | Notify; keep the current binding              |
 | `/role none`               | Legal; later turns do not prepend identity    |
 
+## Status
+
+The status appears as a footnote on the bottom status bar and shows only the identity ID.
+
+![The bottom status bar showing the identity ID (screenshot with the pi-zentui plugin installed)](../imgs/identity-status.png)
+
 ## Compatibility
 
 ### `npm:pi-subagents` notes
