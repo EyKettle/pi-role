@@ -29,10 +29,24 @@ function startExtension(): {
 	turn: EventHandler;
 	role: (args: string) => Promise<void>;
 	appended: Array<{ type: string; data: unknown }>;
+	statuses: Array<{ key: string; text: string | undefined }>;
+	selected: string[] | undefined;
 } {
 	const handlers = new Map<string, EventHandler>();
 	let roleHandler: (args: string, ctx: unknown) => Promise<void> = async () => {};
 	const appended: Array<{ type: string; data: unknown }> = [];
+	const statuses: Array<{ key: string; text: string | undefined }> = [];
+	let selected: string[] | undefined;
+	const ui = {
+		setStatus(key: string, text: string | undefined) {
+			statuses.push({ key, text });
+		},
+		async select(_title: string, options: string[]) {
+			selected = options;
+			return options[0];
+		},
+		notify() {},
+	};
 	factory({
 		on(event: string, handler: EventHandler) {
 			handlers.set(event, handler);
@@ -55,6 +69,7 @@ function startExtension(): {
 		cwd: agentDir,
 		isProjectTrusted: () => false,
 		hasUI: false,
+		ui,
 		sessionManager: { getEntries: () => [] as unknown[] },
 	};
 	return {
@@ -62,18 +77,28 @@ function startExtension(): {
 		turn: () => handlers.get("turn_start")?.(),
 		role: (args: string) => roleHandler(args, ctx),
 		appended,
+		statuses,
+		get selected() {
+			return selected;
+		},
 	};
 }
 
 describe("session identity persistence", () => {
 	it("restores the stored id on startup and does not append", () => {
-		const { start, appended } = startExtension();
+		const { start, appended, statuses } = startExtension();
 		start(
 			{ type: "session_start", reason: "startup" },
 			{
 				cwd: agentDir,
 				isProjectTrusted: () => false,
 				hasUI: false,
+				ui: {
+					setStatus(key: string, text: string | undefined) {
+						statuses.push({ key, text });
+					},
+					notify() {},
+				},
 				sessionManager: {
 					getEntries: () => [
 						{
@@ -92,6 +117,7 @@ describe("session identity persistence", () => {
 			path: join(agentDir, "roles", "Worker.md"),
 		});
 		expect(appended).toEqual([]);
+		expect(statuses).toEqual([{ key: "role", text: "Worker" }]);
 	});
 
 	it("does not append on /role; appends on turn_start", async () => {
@@ -104,5 +130,30 @@ describe("session identity persistence", () => {
 		expect(appended).toEqual([
 			{ type: IDENTITY_ENTRY_TYPE, data: { id: "Worker" } },
 		]);
+	});
+
+	it("sets the footer status to the identity id without a prefix", async () => {
+		const { role, statuses } = startExtension();
+		setBoundIdentity({ kind: "none" });
+		await role("Worker");
+		expect(statuses).toEqual([{ key: "role", text: "Worker" }]);
+		await role("none");
+		expect(statuses).toEqual([
+			{ key: "role", text: "Worker" },
+			{ key: "role", text: "none" },
+		]);
+	});
+
+	it("does not update the footer status when the switch fails", async () => {
+		const { role, statuses } = startExtension();
+		setBoundIdentity({ kind: "none" });
+		await role("Missing");
+		expect(statuses).toEqual([]);
+	});
+
+	it("offers raw identity ids in the selector", async () => {
+		const session = startExtension();
+		await session.role("");
+		expect(session.selected).toEqual(["Worker", "none"]);
 	});
 });

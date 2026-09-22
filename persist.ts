@@ -29,6 +29,10 @@ export function storedIdentityId(outcome: IdentityOutcome): string {
 	return outcome.kind === "none" ? NONE_ID : outcome.id;
 }
 
+export function storedIdentityStatus(outcome: IdentityOutcome): string | undefined {
+  return outcome.kind === "none" ? undefined : outcome.id;
+}
+
 function storedId(data: unknown): string | undefined {
 	if (typeof data !== "object" || data === null) {
 		return undefined;

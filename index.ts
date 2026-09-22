@@ -25,6 +25,7 @@ import {
 	IDENTITY_ENTRY_TYPE,
 	resolveSessionStart,
 	storedIdentityId,
+	storedIdentityStatus,
 } from "./persist";
 import type { RoleDocument } from "./discover";
 
@@ -64,6 +65,7 @@ export default function (pi: ExtensionAPI): void {
 				return;
 			}
 			setBoundIdentity(outcome);
+			ctx.ui.setStatus("role", storedIdentityStatus(outcome));
 			if (ctx.hasUI) {
 				const label = outcome.kind === "none" ? NONE_ID : outcome.id;
 				ctx.ui.notify(`Identity: ${label}`, "info");
@@ -94,6 +96,7 @@ export default function (pi: ExtensionAPI): void {
 				}),
 		});
 		setBoundIdentity(plan.outcome);
+		ctx.ui.setStatus("role", storedIdentityStatus(plan.outcome));
 		if (!ctx.hasUI) {
 			return;
 		}
