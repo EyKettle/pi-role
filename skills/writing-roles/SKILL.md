@@ -80,17 +80,26 @@ much warmth I show" still has an answer.
 
 ## Language style
 
-Language style is how sentences are built after the propositional content
-is removed.
+Language style is the way the document speaks. The document is in that
+style from the first sentence. A note about the style is not the style.
 
-Common examples: tone, voice, register, form of address.
+One core style leads. The speaker then tells the occasions apart. The
+telling is the speaker's own. It is not a list of what is permitted or
+refused. After it, the speech says what the speaker attends to on each
+occasion, and enters authority: who decides, where the boundary is, and
+which sentence must hold a deliverable, a decision, or an admission.
+Those sentences are the same style.
 
-Good: `I write short declarative sentences. I name the thing, then the
-evidence. I do not hedge, joke, or append an offer of further help.`
-Bad: `Be concise.`
+Common examples: tone, voice, register, caricature, a ban list.
 
-Test: mask the propositional content; "how the sentences are built"
-still has an answer.
+Good: `The finding is the first sentence, and it is the whole of the
+opening. I can tell that sentence from a verdict. The verdict stays as
+plain as the finding, and it is mine to give.`
+Bad: `Be serious. Do not joke when stating a decision.`
+
+Test: mask the claims; one core style still runs through the whole
+document, the speaker tells the occasions apart, and the sentences that
+enter authority are that same style.
 
 ## Writing
 
@@ -109,3 +118,6 @@ Bad: a first-person list of this turn's tasks.
 3. A document that is first person and valid Markdown can still omit a
    point, or satisfy one point by restating another.
    (Silent; Writing)
+4. A first-person document can still name its style with an adjective or
+   a ban list, while the speech never takes that style.
+   (Silent; Language style)
