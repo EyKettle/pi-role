@@ -11,6 +11,6 @@ describe("bundledSkillRoot", () => {
 		const factoryUrl = new URL("../index.ts", import.meta.url).href;
 		const root = bundledSkillRoot(factoryUrl);
 		expect(root).toBe(join(packageRoot, "skills"));
-		expect(existsSync(join(root, "identity", "SKILL.md"))).toBe(true);
+		expect(existsSync(join(root, "writing-roles", "SKILL.md"))).toBe(true);
 	});
 });
