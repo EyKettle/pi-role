@@ -21,6 +21,7 @@ import {
 	switchSessionRole,
 } from "./command";
 import { chainedSystemPrompt } from "./prepend";
+import { backfillMeshRoleOnReady, syncMeshRole } from "./mesh-profile";
 import {
 	IDENTITY_ENTRY_TYPE,
 	resolveSessionStart,
@@ -31,6 +32,7 @@ import type { RoleDocument } from "./discover";
 
 export default function (pi: ExtensionAPI): void {
 	registerRoleFlag(pi);
+	backfillMeshRoleOnReady(pi.events, getBoundIdentity);
 	pi.registerCommand("role", {
 		description: "Switch session identity (does not write settings)",
 		getArgumentCompletions: (prefix: string) => {
@@ -65,6 +67,7 @@ export default function (pi: ExtensionAPI): void {
 				return;
 			}
 			setBoundIdentity(outcome);
+			syncMeshRole(outcome);
 			ctx.ui.setStatus("role", storedIdentityStatus(outcome));
 			if (ctx.hasUI) {
 				const label = outcome.kind === "none" ? NONE_ID : outcome.id;
@@ -96,6 +99,7 @@ export default function (pi: ExtensionAPI): void {
 				}),
 		});
 		setBoundIdentity(plan.outcome);
+		syncMeshRole(plan.outcome);
 		ctx.ui.setStatus("role", storedIdentityStatus(plan.outcome));
 		if (!ctx.hasUI) {
 			return;

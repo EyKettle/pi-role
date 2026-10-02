@@ -64,6 +64,11 @@ function startExtension(): {
 		appendEntry(type: string, data?: unknown) {
 			appended.push({ type, data });
 		},
+		events: {
+			on() {
+				return () => {};
+			},
+		},
 	} as unknown as ExtensionAPI);
 	const ctx = {
 		cwd: agentDir,

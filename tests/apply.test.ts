@@ -15,6 +15,11 @@ describe("before_agent_start wiring", () => {
 			getFlag() {
 				return undefined;
 			},
+			events: {
+				on() {
+					return () => {};
+				},
+			},
 		} as unknown as ExtensionAPI);
 		const start = handlers.get("before_agent_start");
 		expect(start).toBeDefined();

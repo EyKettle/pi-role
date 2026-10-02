@@ -35,6 +35,11 @@ describe("extension factory", () => {
 			getFlag() {
 				return undefined;
 			},
+			events: {
+				on() {
+					return () => {};
+				},
+			},
 		} as unknown as ExtensionAPI);
 		expect(names).toContain(ROLE_FLAG);
 	});
